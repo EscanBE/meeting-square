@@ -1,0 +1,620 @@
+{
+	"info": {
+		"_postman_id": "b80ec1d9-354e-4058-b4b8-f54a26ef90c7",
+		"name": "Escan.Live API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "25829768"
+	},
+	"item": [
+		{
+			"name": "test",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{escan-api-ep}}?apikey={{escan-api-key}}&module=account&action=txlist",
+					"host": [
+						"{{escan-api-ep}}"
+					],
+					"query": [
+						{
+							"key": "apikey",
+							"value": "{{escan-api-key}}"
+						},
+						{
+							"key": "module",
+							"value": "account"
+						},
+						{
+							"key": "action",
+							"value": "txlist"
+						},
+						{
+							"key": "address",
+							"value": "evmos1rzsuv9fh660ls85n8yp0rszzn5my5d46jatke6",
+							"description": "(required) wallet to query, support both cosmos and evm style",
+							"disabled": true
+						},
+						{
+							"key": "denom",
+							"value": "ibc/7F0C2CB6E79CC36D29DA7592899F98E3BEFD2CF77A94340C317032A78812393D",
+							"description": "(optional) denom to query. Empty for coinbase. Must be minimum denom (aevmos, ibc/...)",
+							"disabled": true
+						},
+						{
+							"key": "tag",
+							"value": "earliest",
+							"description": "(optional) the string pre-defined block parameter, either `latest` or `earliest`. Currently `pending` is not yet supported. Default value if absent is `latest`",
+							"disabled": true
+						}
+					]
+				},
+				"description": "Get current balance of a specific wallet\n\nReturns: Current balance (in minimum denom). Plus \"erc20\" field is token balance for mapped erc20/ibc pairs\n\nSample response:\n\n``` json\n{\n    \"status\": \"1\",\n    \"message\": \"OK\",\n    \"result\": \"1000\", // coin balance\n    \"erc20\": \"2000\", // ERC20 balance, only visible when API key is Pro\n    \"contract\": \"0x...\", // ERC20 smart contract (1-1 mapped with IBC denom) or empty if ibc denom not mapped, only visible when API key is Pro\n    // \"notice\": \"Upgrade API Pro to get ERC20 balance\" // This field only visible if your API key is not Pro\n}\n\n```"
+			},
+			"response": []
+		},
+		{
+			"name": "[contract] [verifysourcecode] v0.4 + docs",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"apikey\": \"{{escan-api-key}}\",\n    \"module\": \"contract\",\n    \"action\": \"verifysourcecode\",\n    \"contractaddress\": \"0xa8d2b78ce9fb84b03d63dc47fd4490f9820fd70d\",\n    \"sourceCode\": \"{\\n\\t\\t\\u0022language\\u0022: \\u0022Solidity\\u0022,\\n\\t\\t\\u0022sources\\u0022: {\\n\\t\\t\\t\\u0022contracts/say.sol\\u0022: {\\n\\t\\t\\t\\t\\u0022content\\u0022: \\u0022// SPDX-License-Identifier: GPL-3.0\\\\n\\\\npragma solidity \\u003E=0.7.0 \\u003C0.9.0;\\\\n\\\\ncontract Say {\\\\n    event Said(address sender, uint256 number);\\\\n    event Received(address sender, uint amount);\\\\n    event Fallback(address sender, uint amount);\\\\n\\\\n    error ProhibitedNumber(uint256 number, uint256 min, uint256 max);\\\\n\\\\n    address owner;\\\\n    string name;\\\\n    int countSaid;\\\\n\\\\n    constructor(string memory _name) {\\\\n        owner = msg.sender;\\\\n        name = _name;\\\\n        countSaid = 0;\\\\n    }\\\\n\\\\n    function say(uint256 number) public returns (int) {\\\\n        if (number \\u003C 0 || number \\u003E 255) {\\\\n            revert ProhibitedNumber({\\\\n                number: number,\\\\n                min: 0,\\\\n                max: 255\\\\n            });\\\\n        }\\\\n\\\\n        emit Said({\\\\n            sender: owner,\\\\n            number: number\\\\n        });\\\\n\\\\n        countSaid\\u002B\\u002B;\\\\n        return countSaid;\\\\n    }\\\\n\\\\n    function say(uint256 add1, uint add2) public returns (int) {\\\\n        return say(add1 \\u002B add2);\\\\n    }\\\\n\\\\n    receive() external payable {\\\\n        emit Received(msg.sender, msg.value);\\\\n    }\\\\n\\\\n    fallback() external payable {\\\\n        emit Fallback(msg.sender, msg.value);\\\\n    }\\\\n}\\u0022\\n\\t\\t\\t}\\n\\t\\t},\\n\\t\\t\\u0022settings\\u0022: {\\n\\t\\t\\t\\u0022optimizer\\u0022: {\\n\\t\\t\\t\\t\\u0022enabled\\u0022: false,\\n\\t\\t\\t\\t\\u0022runs\\u0022: 200\\n\\t\\t\\t},\\n\\t\\t\\t\\u0022outputSelection\\u0022: {\\n\\t\\t\\t\\t\\u0022*\\u0022: {\\n\\t\\t\\t\\t\\t\\u0022\\u0022: [\\n\\t\\t\\t\\t\\t\\t\\u0022ast\\u0022\\n\\t\\t\\t\\t\\t],\\n\\t\\t\\t\\t\\t\\u0022*\\u0022: [\\n\\t\\t\\t\\t\\t\\t\\u0022abi\\u0022,\\n\\t\\t\\t\\t\\t\\t\\u0022metadata\\u0022,\\n\\t\\t\\t\\t\\t\\t\\u0022devdoc\\u0022,\\n\\t\\t\\t\\t\\t\\t\\u0022userdoc\\u0022,\\n\\t\\t\\t\\t\\t\\t\\u0022storageLayout\\u0022,\\n\\t\\t\\t\\t\\t\\t\\u0022evm.legacyAssembly\\u0022,\\n\\t\\t\\t\\t\\t\\t\\u0022evm.bytecode\\u0022,\\n\\t\\t\\t\\t\\t\\t\\u0022evm.deployedBytecode\\u0022,\\n\\t\\t\\t\\t\\t\\t\\u0022evm.methodIdentifiers\\u0022,\\n\\t\\t\\t\\t\\t\\t\\u0022evm.gasEstimates\\u0022,\\n\\t\\t\\t\\t\\t\\t\\u0022evm.assembly\\u0022\\n\\t\\t\\t\\t\\t]\\n\\t\\t\\t\\t}\\n\\t\\t\\t}\\n\\t\\t}\\n\\t}\",\n    \"codeformat\": \"solidity-standard-json-input\",\n    \"contractname\": \"\",\n    \"compilerversion\": \"v0.8.17+commit.8df45f5f\",\n    \"optimizationUsed\": 0,\n    \"runs\": 200,\n    \"constructorArguements\": \"\",\n    \"evmversion\": \"default\",\n    \"licenseType\": 1,\n    \"libraryname1\": \"\",\n    \"libraryaddress1\": \"\",\n    \"libraryname2\": \"\",\n    \"libraryaddress2\": \"\",\n    \"libraryname3\": \"\",\n    \"libraryaddress3\": \"\",\n    \"libraryname4\": \"\",\n    \"libraryaddress4\": \"\",\n    \"libraryname5\": \"\",\n    \"libraryaddress5\": \"\",\n    \"libraryname6\": \"\",\n    \"libraryaddress6\": \"\",\n    \"libraryname7\": \"\",\n    \"libraryaddress7\": \"\",\n    \"libraryname8\": \"\",\n    \"libraryaddress8\": \"\",\n    \"libraryname9\": \"\",\n    \"libraryaddress9\": \"\",\n    \"libraryname10\": \"\",\n    \"libraryaddress10\": \"\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{escan-api-ep}}",
+					"host": [
+						"{{escan-api-ep}}"
+					]
+				},
+				"description": "Submits a contract source code for verification.\n\nCompatible with submission tools that supports Etherscan API.\n\nOnly supports HTTP POST due to max transfer size limitations for HTTP GET.\n\nSupports up to 10 different library pairs.\n\nContracts that use \"imports\" will need to have the code concatenated into one file as we do not support \"imports\" in separate files.\n\nOnly solc version v0.4.11 and above is supported e.g. v0.4.25+commit.59dbf8f1.\n\nUpon successful submission you will receive a GUID (50 characters) as a receipt.\n\nYou may use this GUID to track the status of your submission."
+			},
+			"response": []
+		},
+		{
+			"name": "[contract] [checkverifystatus] v0.4 + docs",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{escan-api-ep}}?apikey={{escan-api-key}}&module=contract&action=checkverifystatus&guid=d95d7bc4-c28a-4e4e-9626-705bee7ac491",
+					"host": [
+						"{{escan-api-ep}}"
+					],
+					"query": [
+						{
+							"key": "apikey",
+							"value": "{{escan-api-key}}"
+						},
+						{
+							"key": "module",
+							"value": "contract"
+						},
+						{
+							"key": "action",
+							"value": "checkverifystatus"
+						},
+						{
+							"key": "guid",
+							"value": "d95d7bc4-c28a-4e4e-9626-705bee7ac491",
+							"description": "(required) submission id you got from `verifysourcecode` action"
+						}
+					]
+				},
+				"description": "Check Source Code Verification Submission Status\n\nSample response in 3 cases:\n\n(HTTP Status Code always 200)\n\n``` json\n{\n    \"status\": \"0\",\n    \"message\": \"NOTOK\",\n    \"result\": \"Pending in queue\"\n}\n\n```\n\n``` json\n{\n    \"status\": \"1\",\n    \"message\": \"OK\",\n    \"result\": \"Pass - Verified\"\n}\n\n```\n\n``` json\n{\n    \"status\": \"0\",\n    \"message\": \"NOTOK\",\n    \"result\": \"Fail - Unable to verify\"\n}\n\n```"
+			},
+			"response": []
+		},
+		{
+			"name": "[contract] [getsourcecode] v0.4 + docs",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{escan-api-ep}}?apikey={{escan-api-key}}&module=contract&action=getsourcecode&address=0xdb41965dd2ca8214f913809c4429b18b8c50a1b0",
+					"host": [
+						"{{escan-api-ep}}"
+					],
+					"query": [
+						{
+							"key": "apikey",
+							"value": "{{escan-api-key}}"
+						},
+						{
+							"key": "module",
+							"value": "contract"
+						},
+						{
+							"key": "action",
+							"value": "getsourcecode"
+						},
+						{
+							"key": "address",
+							"value": "0xdb41965dd2ca8214f913809c4429b18b8c50a1b0",
+							"description": "(require) smart contract address to query"
+						}
+					]
+				},
+				"description": "Get source code of verified smart contract\n\nSample response:\n\n``` json\n{\n    \"status\": \"1\",\n    \"message\": \"OK\",\n    \"result\": [\n        {\n            \"ABI\": \"[{\\\"type\\\":\\\"function\\\",\\\"name\\\":\\\"magicTxData\\\",\\\"inputs\\\":[{\\\"internalType\\\":\\\"bytes\\\",\\\"name\\\":\\\"data\\\",\\\"type\\\":\\\"bytes\\\"}],\\\"outputs\\\":[],\\\"stateMutability\\\":\\\"nonpayable\\\"},{\\\"type\\\":\\\"function\\\",\\\"name\\\":\\\"magicTxMemo\\\",\\\"inputs\\\":[{\\\"internalType\\\":\\\"string\\\",\\\"name\\\":\\\"memo\\\",\\\"type\\\":\\\"string\\\"}],\\\"outputs\\\":[],\\\"stateMutability\\\":\\\"nonpayable\\\"},{\\\"type\\\":\\\"event\\\",\\\"name\\\":\\\"MagicTxData\\\",\\\"inputs\\\":[{\\\"name\\\":\\\"sender\\\",\\\"type\\\":\\\"address\\\",\\\"indexed\\\":true},{\\\"name\\\":\\\"data\\\",\\\"type\\\":\\\"bytes\\\",\\\"indexed\\\":false}],\\\"anonymous\\\":false},{\\\"type\\\":\\\"fallback\\\"}]\",\n            \"ContractName\": \"MagicTx\",\n            \"CompilerVersion\": \"v0.8.17+commit.8df45f5f\",\n            \"OptimizationUsed\": \"1\",\n            \"Runs\": \"200\",\n            \"ConstructorArguments\": \"\",\n            \"EVMVersion\": \"istanbul\",\n            \"LicenseType\": \"No License (None)\",\n            \"SourceCode\": \"//SPDX-License-Identifier: MIT\\r\\npragma solidity 0.8.17;\\r\\n\\r\\ncontract MagicTx {\\r\\n    event MagicTxData(address indexed sender, bytes data);\\r\\n\\r\\n    fallback() external {\\r\\n        magicTxData(msg.data);\\r\\n    }\\r\\n\\r\\n    function magicTxData(bytes calldata data) public {\\r\\n        emit MagicTxData(msg.sender, data);\\r\\n    }\\r\\n\\r\\n    function magicTxMemo(string calldata memo) external {\\r\\n        magicTxData(bytes(memo));\\r\\n    }\\r\\n}\\r\\n\"\n        }\n    ]\n}\n\n```"
+			},
+			"response": []
+		},
+		{
+			"name": "[stats] [top-holders-by-denom] v0.4 + docs",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{escan-api-ep}}?apikey={{escan-api-key}}&module=stats&action=top-holders-by-denom&denom={{coinbase-min-denom}}",
+					"host": [
+						"{{escan-api-ep}}"
+					],
+					"query": [
+						{
+							"key": "apikey",
+							"value": "{{escan-api-key}}"
+						},
+						{
+							"key": "module",
+							"value": "stats"
+						},
+						{
+							"key": "action",
+							"value": "top-holders-by-denom"
+						},
+						{
+							"key": "denom",
+							"value": "{{coinbase-min-denom}}",
+							"description": "(required) min denom form of coin to query, eg: aevmos, ibc/..."
+						}
+					]
+				},
+				"description": "Get top holders (100) of specific coin.\n\nData refresh per every 12 hours\n\nSample response:\n\n``` json\n{\n    \"status\": \"1\",\n    \"message\": \"OK\",\n    \"result\": [\n        {\n            \"tokenHolderAddress\": \"0x...\",\n            \"tokenHolderCosmosAddress\": \"{{bech32-prefix}}1aaa...\",\n            \"tokenHolderQuantity\": 121492984 // minimum denom\n        },\n        {\n            \"tokenHolderAddress\": \"0x...\",\n            \"tokenHolderCosmosAddress\": \"{{bech32-prefix}}1bbb...\",\n            \"tokenHolderQuantity\": 59768003 // minimum denom\n        },\n    ]\n}\n\n```"
+			},
+			"response": []
+		},
+		{
+			"name": "[account] [balance] v0.4 + docs",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{escan-api-ep}}?apikey={{escan-api-key}}&module=account&action=balance&address=evmos1rzsuv9fh660ls85n8yp0rszzn5my5d46jatke6",
+					"host": [
+						"{{escan-api-ep}}"
+					],
+					"query": [
+						{
+							"key": "apikey",
+							"value": "{{escan-api-key}}"
+						},
+						{
+							"key": "module",
+							"value": "account"
+						},
+						{
+							"key": "action",
+							"value": "balance"
+						},
+						{
+							"key": "address",
+							"value": "evmos1rzsuv9fh660ls85n8yp0rszzn5my5d46jatke6",
+							"description": "(required) wallet to query, support both cosmos and evm style"
+						},
+						{
+							"key": "denom",
+							"value": "ibc/7F0C2CB6E79CC36D29DA7592899F98E3BEFD2CF77A94340C317032A78812393D",
+							"description": "(optional) denom to query. Empty for coinbase. Must be minimum denom (aevmos, ibc/...)",
+							"disabled": true
+						},
+						{
+							"key": "tag",
+							"value": "earliest",
+							"description": "(optional) the string pre-defined block parameter, either `latest` or `earliest`. Currently `pending` is not yet supported. Default value if absent is `latest`",
+							"disabled": true
+						}
+					]
+				},
+				"description": "Get current balance of a specific wallet\n\nReturns: Current balance (in minimum denom). Plus \"erc20\" field is token balance for mapped erc20/ibc pairs\n\nSample response:\n\n``` json\n{\n    \"status\": \"1\",\n    \"message\": \"OK\",\n    \"result\": \"1000\", // coin balance\n    \"erc20\": \"2000\", // ERC20 balance, only visible when API key is Pro\n    \"contract\": \"0x...\", // ERC20 smart contract (1-1 mapped with IBC denom) or empty if ibc denom not mapped, only visible when API key is Pro\n    // \"notice\": \"Upgrade API Pro to get ERC20 balance\" // This field only visible if your API key is not Pro\n}\n\n```"
+			},
+			"response": []
+		},
+		{
+			"name": "[account] [balancecache] v0.4 + docs",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{escan-api-ep}}?apikey={{escan-api-key}}&module=account&action=balancecache&address=evmos1rzsuv9fh660ls85n8yp0rszzn5my5d46jatke6",
+					"host": [
+						"{{escan-api-ep}}"
+					],
+					"query": [
+						{
+							"key": "apikey",
+							"value": "{{escan-api-key}}"
+						},
+						{
+							"key": "module",
+							"value": "account"
+						},
+						{
+							"key": "action",
+							"value": "balancecache"
+						},
+						{
+							"key": "address",
+							"value": "evmos1rzsuv9fh660ls85n8yp0rszzn5my5d46jatke6",
+							"description": "(required) wallet to query, support both cosmos and evm style"
+						}
+					]
+				},
+				"description": "Get current balance of a specific wallet, from cache.\n\n**WARNING: balance data from cache, should not be trusted for critical logics.**\n\nSample response:\n\n``` json\n{\n    \"status\": \"1\",\n    \"message\": \"OK\",\n    \"result\": [\n    {\n        \"denom\": \"{{coinbase-min-denom}}\",\n        \"name\": \"{{coinbase}}\", // for display purpose\n        \"coin\": \"100549684627422442347\", // coin balance\n        \"erc20\": \"0\"\n    },\n    {\n        \"denom\": \"ibc/XXXX\",\n        \"name\": \"ATOM\", // for display purpose\n        \"coin\": \"1000000\", // coin balance\n        \"erc20\": \"2000000\" // erc20 token balance\n    },\n}\n\n```"
+			},
+			"response": []
+		},
+		{
+			"name": "[account] [balancemulti] v0.4 + docs",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{escan-api-ep}}?apikey={{escan-api-key}}&module=account&action=balancemulti&address=evmos1rzsuv9fh660ls85n8yp0rszzn5my5d46jatke6,0x326235c42ecc751a47fe857a5861d1110da27824&denom=ibc/7F0C2CB6E79CC36D29DA7592899F98E3BEFD2CF77A94340C317032A78812393D",
+					"host": [
+						"{{escan-api-ep}}"
+					],
+					"query": [
+						{
+							"key": "apikey",
+							"value": "{{escan-api-key}}"
+						},
+						{
+							"key": "module",
+							"value": "account"
+						},
+						{
+							"key": "action",
+							"value": "balancemulti"
+						},
+						{
+							"key": "address",
+							"value": "evmos1rzsuv9fh660ls85n8yp0rszzn5my5d46jatke6,0x326235c42ecc751a47fe857a5861d1110da27824",
+							"description": "(required) wallet to query, support both cosmos and evm style. Multiple addresses separated by \",\" comma"
+						},
+						{
+							"key": "denom",
+							"value": "ibc/7F0C2CB6E79CC36D29DA7592899F98E3BEFD2CF77A94340C317032A78812393D",
+							"description": "(optional) denom to query. Empty for coinbase. Must be minimum denom (aevmos, ibc/...)"
+						},
+						{
+							"key": "tag",
+							"value": "earliest",
+							"description": "(optional) the string pre-defined block parameter, either `latest` or `earliest`. Currently `pending` is not yet supported. Default value if absent is `latest`",
+							"disabled": true
+						}
+					]
+				},
+				"description": "Get current balance of multiple wallets, up to 20 wallets.\n\nReturns: Current balance (in minimum denom) of each wallet. Plus \"erc20\" field is token balance for mapped erc20/ibc pairs\n\nSample response:\n\n``` json\n{\n    \"status\": \"1\",\n    \"message\": \"OK\",\n    \"result\": [\n        {\n            \"account\": \"0x111...\", // evm-style address of wallet\n            \"cosmosAccount\": \"evmos1aaa...\", // cosmos-style address of wallet\n            \"balance\": \"1000\", // coin balance\n            \"erc20\": \"2000\", // ERC20 balance, only visible when API key is Pro\n        },\n        {\n            \"account\": \"0x222...\", // evm-style address of wallet\n            \"cosmosAccount\": \"evmos1bbb...\", // cosmos-style address of wallet\n            \"balance\": \"500\", // coin balance\n            \"erc20\": \"600\", // ERC20 balance, only visible when API key is Pro\n        },\n    ],\n    \"contract\": \"0x...\", // ERC20 smart contract (1-1 mapped with IBC denom) or empty if ibc denom not mapped, only visible when API key is Pro\n    // \"notice\": \"Upgrade API Pro to get ERC20 balance\" // This field only visible if your API key is not Pro\n}\n\n```"
+			},
+			"response": []
+		},
+		{
+			"name": "[stats] [tokensupply] v0.4 + docs",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{escan-api-ep}}?apikey={{escan-api-key}}&module=stats&action=tokensupplyhistory&contractaddress=0xd4949664cd82660aae99bedc034a0dea8a0bd517",
+					"host": [
+						"{{escan-api-ep}}"
+					],
+					"query": [
+						{
+							"key": "apikey",
+							"value": "{{escan-api-key}}"
+						},
+						{
+							"key": "module",
+							"value": "stats"
+						},
+						{
+							"key": "action",
+							"value": "tokensupplyhistory"
+						},
+						{
+							"key": "contractaddress",
+							"value": "0xd4949664cd82660aae99bedc034a0dea8a0bd517",
+							"description": "(required) contract address of smart contract you want to check"
+						}
+					]
+				},
+				"description": "Get ERC20 Token total supply of specific smart contract.\n\nRequire API Pro\n\nSample response:\n\n``` json\n{\n    \"status\": \"1\",\n    \"message\": \"OK\",\n    \"result\": \"556484371209047126379559\" // in minimum denom\n}\n\n```"
+			},
+			"response": []
+		},
+		{
+			"name": "[stats] [***supply] v0.4 + docs",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{escan-api-ep}}?apikey={{escan-api-key}}&module=stats&action={{coinbase}}supply",
+					"host": [
+						"{{escan-api-ep}}"
+					],
+					"query": [
+						{
+							"key": "apikey",
+							"value": "{{escan-api-key}}"
+						},
+						{
+							"key": "module",
+							"value": "stats"
+						},
+						{
+							"key": "action",
+							"value": "{{coinbase}}supply",
+							"description": "alias: `ethsupply` (Etherscan compability)"
+						}
+					]
+				},
+				"description": "Get total supply {{coinbase}} on-chain\n\nSample response:\n\n``` json\n{\n    \"status\": \"1\",\n    \"message\": \"OK\",\n    \"result\": \"625955003685793987004725274\" // in minimum denom, = 625m coin\n}\n\n```"
+			},
+			"response": []
+		},
+		{
+			"name": "[stats] [***price] v0.4 + docs",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{escan-api-ep}}?apikey={{escan-api-key}}&module=stats&action={{coinbase}}price",
+					"host": [
+						"{{escan-api-ep}}"
+					],
+					"query": [
+						{
+							"key": "apikey",
+							"value": "{{escan-api-key}}"
+						},
+						{
+							"key": "module",
+							"value": "stats"
+						},
+						{
+							"key": "action",
+							"value": "{{coinbase}}price",
+							"description": "alias: `ethprice` (Etherscan compability)"
+						}
+					]
+				},
+				"description": "Get {{coinbase}} last price\n\nSample response:\n\n``` json\n{\n    \"status\": \"1\",\n    \"message\": \"OK\",\n    \"result\": {\n        \"ethbtc\": \"1.899E-05\", // Keep eth prefix for Etherscan compability (alias)\n        \"ethbtc_timestamp\": \"1676443184\", // Keep eth prefix for Etherscan compability (alias)\n        \"ethusd\": \"0.420109\", // Keep eth prefix for Etherscan compability (alias)\n        \"ethusd_timestamp\": \"1676443184\" // Keep eth prefix for Etherscan compability (alias)\n        \"{{coinbase}}btc\": \"1.899E-05\", // 1 {{coinbase}} = ? BTC\n        \"{{coinbase}}btc_timestamp\": \"1676443696\",\n        \"{{coinbase}}usd\": \"0.420109\", // 1 {{coinbase}} = ? USD\n        \"{{coinbase}}usd_timestamp\": \"1676443696\"\n    }\n}\n\n```"
+			},
+			"response": []
+		},
+		{
+			"name": "PRO [stats] [tokensupplyhistory] v0.4 + docs",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{escan-api-ep}}?apikey={{escan-api-key}}&module=stats&action=tokensupplyhistory&contractaddress=0xd4949664cd82660aae99bedc034a0dea8a0bd517",
+					"host": [
+						"{{escan-api-ep}}"
+					],
+					"query": [
+						{
+							"key": "apikey",
+							"value": "{{escan-api-key}}"
+						},
+						{
+							"key": "module",
+							"value": "stats"
+						},
+						{
+							"key": "action",
+							"value": "tokensupplyhistory"
+						},
+						{
+							"key": "contractaddress",
+							"value": "0xd4949664cd82660aae99bedc034a0dea8a0bd517",
+							"description": "(required) contract address of smart contract you want to check"
+						},
+						{
+							"key": "blockno",
+							"value": "58701",
+							"description": "(optional) context block number to query, minimum accepted value is genesis block number. Latest block number is default value when absent",
+							"disabled": true
+						}
+					]
+				},
+				"description": "Get ERC20 Token total supply of specific smart contract at given context block number.\n\nRequire API Pro\n\nSample response:\n\n``` json\n{\n    \"status\": \"1\",\n    \"message\": \"OK\",\n    \"result\": \"556484371209047126379559\" // in minimum denom\n}\n\n```"
+			},
+			"response": []
+		},
+		{
+			"name": "PRO [stats] [***dailyprice] v0.4 + docs",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{escan-api-ep}}?apikey={{escan-api-key}}&module=stats&action={{coinbase}}dailyprice&startdate=2022-10-14&enddate=2023-01-10&sort=desc",
+					"host": [
+						"{{escan-api-ep}}"
+					],
+					"query": [
+						{
+							"key": "apikey",
+							"value": "{{escan-api-key}}"
+						},
+						{
+							"key": "module",
+							"value": "stats"
+						},
+						{
+							"key": "action",
+							"value": "{{coinbase}}dailyprice",
+							"description": "alias: `ethdailyprice` (Etherscan compability)"
+						},
+						{
+							"key": "startdate",
+							"value": "2022-10-14",
+							"description": "(required) start date of date range. Accepted format is yyyy-MM-dd"
+						},
+						{
+							"key": "enddate",
+							"value": "2023-01-10",
+							"description": "(required) end date of date range. Accepted format is yyyy-MM-dd. Maximum date diff is 90 days"
+						},
+						{
+							"key": "sort",
+							"value": "desc",
+							"description": "(optional) Sorting output, accepted values are \"asc\" and \"desc\""
+						}
+					]
+				},
+				"description": "Get daily price of coinbase in specified date range, upto 90 days.\n\nRequire API Pro.\n\nSample response:\n\n``` json\n{\n    \"status\": \"1\",\n    \"message\": \"OK\",\n    \"result\": [\n        {\n            \"utcDate\": \"2023-01-06\",\n            \"unixTimeStamp\": \"1672963200\",\n            \"value\": \"0.460798\" // USD\n        },\n        {\n            \"utcDate\": \"2023-01-07\",\n            \"unixTimeStamp\": \"1673049600\",\n            \"value\": \"0.451491\" // USD\n        },\n    ]\n}\n\n```"
+			},
+			"response": []
+		},
+		{
+			"name": "PRO [account] [balancehistory] v0.4 + docs",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{escan-api-ep}}?apikey={{escan-api-key}}&module=account&action=balancehistory&address=evmos1rzsuv9fh660ls85n8yp0rszzn5my5d46jatke6&blockno=58701&denom=ibc/7F0C2CB6E79CC36D29DA7592899F98E3BEFD2CF77A94340C317032A78812393D",
+					"host": [
+						"{{escan-api-ep}}"
+					],
+					"query": [
+						{
+							"key": "apikey",
+							"value": "{{escan-api-key}}"
+						},
+						{
+							"key": "module",
+							"value": "account"
+						},
+						{
+							"key": "action",
+							"value": "balancehistory"
+						},
+						{
+							"key": "address",
+							"value": "evmos1rzsuv9fh660ls85n8yp0rszzn5my5d46jatke6",
+							"description": "(required) wallet to query, support both cosmos and evm style"
+						},
+						{
+							"key": "blockno",
+							"value": "58701",
+							"description": "(optional) context block number to query, minimum accepted value is genesis block number. Latest block number is default value when absent"
+						},
+						{
+							"key": "denom",
+							"value": "ibc/7F0C2CB6E79CC36D29DA7592899F98E3BEFD2CF77A94340C317032A78812393D",
+							"description": "(optional) denom to query. Empty for coinbase. Must be minimum denom (aevmos, ibc/...)"
+						}
+					]
+				},
+				"description": "Get balance of wallet at given context block number\n\nRequire API Pro\n\nReturns: balance in minimum denom, at given context block number. Plus \"erc20\" field is token balance for mapped erc20/ibc pairs\n\nSample response:\n\n``` json\n{\n    \"status\": \"1\",\n    \"message\": \"OK\",\n    \"result\": \"1000\", // coin balance\n    \"erc20\": \"2000\", // ERC20 balance\n    \"contract\": \"0x...\", // ERC20 smart contract (1-1 mapped with IBC denom) or empty if ibc denom not mapped\n}\n\n```"
+			},
+			"response": []
+		},
+		{
+			"name": "PRO [account] [balancemultihistory] v0.4 + docs",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{escan-api-ep}}?apikey={{escan-api-key}}&module=account&action=balancemultihistory&address=evmos1rzsuv9fh660ls85n8yp0rszzn5my5d46jatke6,0x326235c42ecc751a47fe857a5861d1110da27824&blockno=58701&denom=ibc/7F0C2CB6E79CC36D29DA7592899F98E3BEFD2CF77A94340C317032A78812393D",
+					"host": [
+						"{{escan-api-ep}}"
+					],
+					"query": [
+						{
+							"key": "apikey",
+							"value": "{{escan-api-key}}"
+						},
+						{
+							"key": "module",
+							"value": "account"
+						},
+						{
+							"key": "action",
+							"value": "balancemultihistory"
+						},
+						{
+							"key": "address",
+							"value": "evmos1rzsuv9fh660ls85n8yp0rszzn5my5d46jatke6,0x326235c42ecc751a47fe857a5861d1110da27824",
+							"description": "(required) wallet to query, support both cosmos and evm style. Multiple addresses separated by \",\" comma"
+						},
+						{
+							"key": "blockno",
+							"value": "58701",
+							"description": "(optional) context block number to query, minimum accepted value is genesis block number. Latest block number is default value when absent"
+						},
+						{
+							"key": "denom",
+							"value": "ibc/7F0C2CB6E79CC36D29DA7592899F98E3BEFD2CF77A94340C317032A78812393D",
+							"description": "(optional) denom to query. Empty for coinbase. Must be minimum denom (aevmos, ibc/...)"
+						}
+					]
+				},
+				"description": "Get balance of multiple wallets at given context block number, up to 20 wallets\n\nRequire API Pro\n\nReturns: balance of each wallet in minimum denom, at given context block number. Plus \"erc20\" field is token balance for mapped erc20/ibc pairs\n\nSample response:\n\n``` json\n{\n    \"status\": \"1\",\n    \"message\": \"OK\",\n    \"result\": [\n        {\n            \"account\": \"0x111...\", // evm-style address of wallet\n            \"cosmosAccount\": \"{{bech32-prefix}}1aaa...\", // cosmos-style address of wallet\n            \"balance\": \"1000\", // coin balance\n            \"erc20\": \"2000\", // ERC20 balance\n        },\n        {\n            \"account\": \"0x222...\", // evm-style address of wallet\n            \"cosmosAccount\": \"{{bech32-prefix}}1bbb...\", // cosmos-style address of wallet\n            \"balance\": \"500\", // coin balance\n            \"erc20\": \"600\", // ERC20 balance\n        },\n    ],\n    \"contract\": \"0x...\", // ERC20 smart contract (1-1 mapped with IBC denom) or empty if ibc denom not mapped\n}\n\n```"
+			},
+			"response": []
+		},
+		{
+			"name": "PRO [transaction] [converthash] v0.4 + docs",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{escan-api-ep}}?apikey={{escan-api-key}}&module=transaction&action=converthash&hash=0x0b99b2f3c97b695f5c9482a449bc070d52ce18ea409a7e553174de5393ee50ce",
+					"host": [
+						"{{escan-api-ep}}"
+					],
+					"query": [
+						{
+							"key": "apikey",
+							"value": "{{escan-api-key}}"
+						},
+						{
+							"key": "module",
+							"value": "transaction"
+						},
+						{
+							"key": "action",
+							"value": "converthash"
+						},
+						{
+							"key": "hash",
+							"value": "0x0b99b2f3c97b695f5c9482a449bc070d52ce18ea409a7e553174de5393ee50ce",
+							"description": "(required) source hash. Automatically detect mode: must be `0x + 64 chars` for evm hash and `64 chars without prefix 0x` for cosmos hash"
+						}
+					]
+				},
+				"description": "Convert Evm Tx Hash <=> Cosmos Tx Hash\n\nRequire API Pro\n\nTips: based on input hash, mode will be detected automatically because:\n\nEvm Tx Hash: 0x + 64 chars\n\nCosmos Hash: only 64 chars, without 0x as prefix\n\nSample response:\n\n``` json\n{\n    \"status\": \"1\",\n    \"message\": \"OK\",\n    \"result\": \"D7FF4536B522A468FD326D64B8C33BDE14B4674DA7295BCA36A7D365786C2F18\"\n}\n\n```"
+			},
+			"response": []
+		}
+	]
+}
