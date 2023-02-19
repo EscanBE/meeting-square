@@ -123,6 +123,99 @@
 			"response": []
 		},
 		{
+			"name": "[contract] [verifyproxycontract] v0.5 + docs",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "apikey",
+							"value": "{{escan-api-key}}",
+							"type": "text"
+						},
+						{
+							"key": "module",
+							"value": "contract",
+							"type": "text"
+						},
+						{
+							"key": "action",
+							"value": "verifyproxycontract",
+							"type": "text"
+						},
+						{
+							"key": "address",
+							"value": "0xeB13EBE7613f9FC03A4ac091574Dc04ceb45562f",
+							"description": "(required) proxy contract to verify",
+							"type": "text"
+						},
+						{
+							"key": "expectedimplementation",
+							"value": "0x295a147C13951c9C9b0270355Bf580D8Dd1EEDb0",
+							"description": "(optional) expected implementation contract address. This enforces a check to ensure the returned implementation contract address == address picked up by the verifier\n",
+							"type": "text",
+							"disabled": true
+						}
+					]
+				},
+				"url": {
+					"raw": "{{escan-api-ep}}",
+					"host": [
+						"{{escan-api-ep}}"
+					]
+				},
+				"description": "Submits a proxy contract for verification of implementation.\n\nCurrently only support proxy contracts with EIP-1967 compatible.\n\nCompatible with submission tools that supports Etherscan API.\n\nSupport GET or POST (application/json and x-www-form-urlencoded)\n\nUpon successful submission you will receive a GUID (50 characters) as a receipt.\n\nYou may use this GUID to track the status of your submission."
+			},
+			"response": []
+		},
+		{
+			"name": "[contract] [checkproxyverification] v0.5 + docs",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{escan-api-ep}}?apikey={{escan-api-key}}&module=contract&action=checkproxyverification&guid=9b881799-2727-4938-8f99-4b69fd820bd5",
+					"host": [
+						"{{escan-api-ep}}"
+					],
+					"query": [
+						{
+							"key": "apikey",
+							"value": "{{escan-api-key}}"
+						},
+						{
+							"key": "module",
+							"value": "contract"
+						},
+						{
+							"key": "action",
+							"value": "checkproxyverification"
+						},
+						{
+							"key": "guid",
+							"value": "9b881799-2727-4938-8f99-4b69fd820bd5",
+							"description": "(required) submission id you got from `verifyproxycontract` action"
+						}
+					]
+				},
+				"description": "Check Proxy Verification Submission Status\n\nSample response in 3 cases:\n\n(HTTP Status Code always 200)\n\n``` json\n{\n    \"status\": \"0\",\n    \"message\": \"NOTOK\",\n    \"result\": \"Pending in queue\"\n}\n\n```\n\n``` json\n{\n    \"status\": \"1\",\n    \"message\": \"OK\",\n    \"result\": \"Pass - Verified\"\n}\n\n```\n\n``` json\n{\n    \"status\": \"0\",\n    \"message\": \"NOTOK\",\n    \"result\": \"Fail - Unable to verify\"\n}\n\n```"
+			},
+			"response": []
+		},
+		{
 			"name": "[contract] [getsourcecode] v0.4 + docs",
 			"request": {
 				"method": "GET",
@@ -153,40 +246,6 @@
 					]
 				},
 				"description": "Get source code of verified smart contract\n\nSample response:\n\n``` json\n{\n    \"status\": \"1\",\n    \"message\": \"OK\",\n    \"result\": [\n        {\n            \"ABI\": \"[{\\\"type\\\":\\\"function\\\",\\\"name\\\":\\\"magicTxData\\\",\\\"inputs\\\":[{\\\"internalType\\\":\\\"bytes\\\",\\\"name\\\":\\\"data\\\",\\\"type\\\":\\\"bytes\\\"}],\\\"outputs\\\":[],\\\"stateMutability\\\":\\\"nonpayable\\\"},{\\\"type\\\":\\\"function\\\",\\\"name\\\":\\\"magicTxMemo\\\",\\\"inputs\\\":[{\\\"internalType\\\":\\\"string\\\",\\\"name\\\":\\\"memo\\\",\\\"type\\\":\\\"string\\\"}],\\\"outputs\\\":[],\\\"stateMutability\\\":\\\"nonpayable\\\"},{\\\"type\\\":\\\"event\\\",\\\"name\\\":\\\"MagicTxData\\\",\\\"inputs\\\":[{\\\"name\\\":\\\"sender\\\",\\\"type\\\":\\\"address\\\",\\\"indexed\\\":true},{\\\"name\\\":\\\"data\\\",\\\"type\\\":\\\"bytes\\\",\\\"indexed\\\":false}],\\\"anonymous\\\":false},{\\\"type\\\":\\\"fallback\\\"}]\",\n            \"ContractName\": \"MagicTx\",\n            \"CompilerVersion\": \"v0.8.17+commit.8df45f5f\",\n            \"OptimizationUsed\": \"1\",\n            \"Runs\": \"200\",\n            \"ConstructorArguments\": \"\",\n            \"EVMVersion\": \"istanbul\",\n            \"LicenseType\": \"No License (None)\",\n            \"SourceCode\": \"//SPDX-License-Identifier: MIT\\r\\npragma solidity 0.8.17;\\r\\n\\r\\ncontract MagicTx {\\r\\n    event MagicTxData(address indexed sender, bytes data);\\r\\n\\r\\n    fallback() external {\\r\\n        magicTxData(msg.data);\\r\\n    }\\r\\n\\r\\n    function magicTxData(bytes calldata data) public {\\r\\n        emit MagicTxData(msg.sender, data);\\r\\n    }\\r\\n\\r\\n    function magicTxMemo(string calldata memo) external {\\r\\n        magicTxData(bytes(memo));\\r\\n    }\\r\\n}\\r\\n\"\n        }\n    ]\n}\n\n```"
-			},
-			"response": []
-		},
-		{
-			"name": "[stats] [top-holders-by-denom] v0.4 + docs",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "{{escan-api-ep}}?apikey={{escan-api-key}}&module=stats&action=top-holders-by-denom&denom={{coinbase-min-denom}}",
-					"host": [
-						"{{escan-api-ep}}"
-					],
-					"query": [
-						{
-							"key": "apikey",
-							"value": "{{escan-api-key}}"
-						},
-						{
-							"key": "module",
-							"value": "stats"
-						},
-						{
-							"key": "action",
-							"value": "top-holders-by-denom"
-						},
-						{
-							"key": "denom",
-							"value": "{{coinbase-min-denom}}",
-							"description": "(required) min denom form of coin to query, eg: aevmos, ibc/..."
-						}
-					]
-				},
-				"description": "Get top holders (100) of specific coin.\n\nData refresh per every 12 hours\n\nSample response:\n\n``` json\n{\n    \"status\": \"1\",\n    \"message\": \"OK\",\n    \"result\": [\n        {\n            \"tokenHolderAddress\": \"0x...\",\n            \"tokenHolderCosmosAddress\": \"{{bech32-prefix}}1aaa...\",\n            \"tokenHolderQuantity\": 121492984 // minimum denom\n        },\n        {\n            \"tokenHolderAddress\": \"0x...\",\n            \"tokenHolderCosmosAddress\": \"{{bech32-prefix}}1bbb...\",\n            \"tokenHolderQuantity\": 59768003 // minimum denom\n        },\n    ]\n}\n\n```"
 			},
 			"response": []
 		},
@@ -316,6 +375,40 @@
 			"response": []
 		},
 		{
+			"name": "[stats] [top-holders-by-denom] v0.4 + docs",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{escan-api-ep}}?apikey={{escan-api-key}}&module=stats&action=top-holders-by-denom&denom={{coinbase-min-denom}}",
+					"host": [
+						"{{escan-api-ep}}"
+					],
+					"query": [
+						{
+							"key": "apikey",
+							"value": "{{escan-api-key}}"
+						},
+						{
+							"key": "module",
+							"value": "stats"
+						},
+						{
+							"key": "action",
+							"value": "top-holders-by-denom"
+						},
+						{
+							"key": "denom",
+							"value": "{{coinbase-min-denom}}",
+							"description": "(required) min denom form of coin to query, eg: aevmos, ibc/..."
+						}
+					]
+				},
+				"description": "Get top holders (100) of specific coin.\n\nData refresh per every 12 hours\n\nSample response:\n\n``` json\n{\n    \"status\": \"1\",\n    \"message\": \"OK\",\n    \"result\": [\n        {\n            \"tokenHolderAddress\": \"0x...\",\n            \"tokenHolderCosmosAddress\": \"{{bech32-prefix}}1aaa...\",\n            \"tokenHolderQuantity\": 121492984 // minimum denom\n        },\n        {\n            \"tokenHolderAddress\": \"0x...\",\n            \"tokenHolderCosmosAddress\": \"{{bech32-prefix}}1bbb...\",\n            \"tokenHolderQuantity\": 59768003 // minimum denom\n        },\n    ]\n}\n\n```"
+			},
+			"response": []
+		},
+		{
 			"name": "[stats] [tokensupply] v0.4 + docs",
 			"request": {
 				"method": "GET",
@@ -406,6 +499,123 @@
 					]
 				},
 				"description": "Get {{coinbase}} last price\n\nSample response:\n\n``` json\n{\n    \"status\": \"1\",\n    \"message\": \"OK\",\n    \"result\": {\n        \"ethbtc\": \"1.899E-05\", // Keep eth prefix for Etherscan compability (alias)\n        \"ethbtc_timestamp\": \"1676443184\", // Keep eth prefix for Etherscan compability (alias)\n        \"ethusd\": \"0.420109\", // Keep eth prefix for Etherscan compability (alias)\n        \"ethusd_timestamp\": \"1676443184\" // Keep eth prefix for Etherscan compability (alias)\n        \"{{coinbase}}btc\": \"1.899E-05\", // 1 {{coinbase}} = ? BTC\n        \"{{coinbase}}btc_timestamp\": \"1676443696\",\n        \"{{coinbase}}usd\": \"0.420109\", // 1 {{coinbase}} = ? USD\n        \"{{coinbase}}usd_timestamp\": \"1676443696\"\n    }\n}\n\n```"
+			},
+			"response": []
+		},
+		{
+			"name": "[logs] [getLogs] v0.5 + docs",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{escan-api-ep}}?apikey={{escan-api-key}}&module=logs&action=getLogs&address=0xeB13EBE7613f9FC03A4ac091574Dc04ceb45562f&topic0=0x7e644d79422f17c01e4894b5f4f588d331ebfa28653d42ae832dc59e38c9798f",
+					"host": [
+						"{{escan-api-ep}}"
+					],
+					"query": [
+						{
+							"key": "apikey",
+							"value": "{{escan-api-key}}"
+						},
+						{
+							"key": "module",
+							"value": "logs"
+						},
+						{
+							"key": "action",
+							"value": "getLogs"
+						},
+						{
+							"key": "fromBlock",
+							"value": "0",
+							"description": "(optional) can be block number or heximal block number or pre-defined tag `earliest`",
+							"disabled": true
+						},
+						{
+							"key": "toBlock",
+							"value": "latest",
+							"description": "(optional) can be block number or heximal block number or pre-defined tags `latest` `earliest`",
+							"disabled": true
+						},
+						{
+							"key": "address",
+							"value": "0xeB13EBE7613f9FC03A4ac091574Dc04ceb45562f",
+							"description": "(optional)"
+						},
+						{
+							"key": "topic0",
+							"value": "0x7e644d79422f17c01e4894b5f4f588d331ebfa28653d42ae832dc59e38c9798f",
+							"description": "(optional)"
+						},
+						{
+							"key": "topic1",
+							"value": "",
+							"description": "(optional)",
+							"disabled": true
+						},
+						{
+							"key": "topic2",
+							"value": "",
+							"description": "(optional)",
+							"disabled": true
+						},
+						{
+							"key": "topic3",
+							"value": "",
+							"description": "(optional)",
+							"disabled": true
+						},
+						{
+							"key": "topic0_1_opr",
+							"value": "and",
+							"description": "(optional) `and` `or`",
+							"disabled": true
+						},
+						{
+							"key": "topic0_2_opr",
+							"value": "and",
+							"description": "(optional) `and` `or`",
+							"disabled": true
+						},
+						{
+							"key": "topic0_3_opr",
+							"value": "and",
+							"description": "(optional) `and` `or`",
+							"disabled": true
+						},
+						{
+							"key": "topic1_2_opr",
+							"value": "and",
+							"description": "(optional) `and` `or`",
+							"disabled": true
+						},
+						{
+							"key": "topic1_3_opr",
+							"value": "and",
+							"description": "(optional) `and` `or`",
+							"disabled": true
+						},
+						{
+							"key": "topic2_3_opr",
+							"value": "and",
+							"description": "(optional) `and` `or`",
+							"disabled": true
+						},
+						{
+							"key": "page",
+							"value": "1",
+							"description": "(optional)",
+							"disabled": true
+						},
+						{
+							"key": "limit",
+							"value": "50",
+							"description": "(optional) maximum 1000",
+							"disabled": true
+						}
+					]
+				},
+				"description": "Get Event Logs with filter\n\nNotice: all query parameters are optional, but require at least one of those: `address` or `topicX`\n\nSample response:\n\n``` json\n{\n    \"status\": \"1\",\n    \"message\": \"OK\",\n    \"result\": [\n        {\n            \"address\": \"0xeb13ebe7613f9fc03a4ac091574dc04ceb45562f\",\n            \"topics\": [\n                \"0x7e644d79422f17c01e4894b5f4f588d331ebfa28653d42ae832dc59e38c9798f\"\n            ],\n            \"data\": \"0x0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000d724ed0dc27d8e5364ae786dd562c04644dd3c1c\",\n            \"blockNumber\": \"0x1D0104\",\n            \"timeStamp\": \"0x0\", // hardcoded, always zero\n            \"logIndex\": \"0x5\",\n            \"transactionHash\": \"0x61eb8e0e65d557cd22e56ac780ad576ea7dc16bad753f4f064ba61b627cf503a\",\n            \"transactionIndex\": \"0x1\"\n        }\n    ]\n}\n\n```"
 			},
 			"response": []
 		},
