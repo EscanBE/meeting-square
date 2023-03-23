@@ -375,6 +375,138 @@
 			"response": []
 		},
 		{
+			"name": "TO BE REMOVED [account] [txs] v0.6",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{escan-api-ep}}?apikey={{escan-api-key}}&module=account&action=txs&address=0x6bcfe7307663bb2b0c1c70294c8af1ea01fef0de&page=1&limit=200",
+					"host": [
+						"{{escan-api-ep}}"
+					],
+					"query": [
+						{
+							"key": "apikey",
+							"value": "{{escan-api-key}}"
+						},
+						{
+							"key": "module",
+							"value": "account"
+						},
+						{
+							"key": "action",
+							"value": "txs"
+						},
+						{
+							"key": "address",
+							"value": "0x6bcfe7307663bb2b0c1c70294c8af1ea01fef0de",
+							"description": "(required) wallet to query, support both cosmos and evm style"
+						},
+						{
+							"key": "page",
+							"value": "1",
+							"description": "(optional)"
+						},
+						{
+							"key": "limit",
+							"value": "200",
+							"description": "(optional) max 200, min 5"
+						}
+					]
+				},
+				"description": "Sample response:\n\n``` json\n{\n    \"status\": 1, // request success\n    \"message\": \"OK\", // request success\n    \"result\": {\n        \"evm_addr\": \"0x...\", // evm style of wallet\n        \"cosmos_addr\": \"{{bech32-prefix}}1...\", // cosmos style of wallet\n        \"page\": 1, // page number (reflect from query)\n        \"limit\": 200, // limit per page (reflect from query)\n        \"txs_count\": 104, // total number of txs within this response\n        \"txs\": [\n            {\n                \"cosmos_tx_hash\": \"...\", // cosmos tx hash\n                \"evm_tx_hash\": \"...\", // nullable evm tx hash\n                \"evm_method_display\": \"\", // nullable translated invoked contract method (contract call)\n                \"eob_balance\": \"1544339910970494040550861\", // end of block coinbase balance ({{coinbase-min-denom}})\n                \"eob_balance_display\": \"1544339.910970494040550861\", // end of block coinbase balance ({{coinbase}})\n                \"success\": true, // tx success status\n                \"block\": 10957016, // block height\n                \"epoch\": 1676400981, // block time (epoch seconds aka unix)\n                \"type_summary\": \"cosmos.*.v1beta1.*\", // nullable type summary of inner messages, can be cosmos message type or evm method id (0x...)\n                \"total_value\": \"60000000000000000000000\", // total value {{coinbase-min-denom}} of tx (coinbase only)\n                \"total_value_display\": \"60000.0\", // total value {{coinbase}} of tx (coinbase only)\n                \"fee\": \"6127275000000000\", // tx fee ({{coinbase-min-denom}})\n                \"fee_display\": \"0.006127275\", // tx fee ({{coinbase}})\n                \"messages\": [\n                    {\n                        \"order\": 1, // order of message within tx\n                        \"type\": \"cosmos.*.v1beta1.*\", // cosmos message type\n                        \"nested_type\": \"\", // cosmos nested message type in-case MsgExec\n                        \"success\": true, // msg success status\n                        \"evm_hash\": \"0x...\", // nullable evm tx hash\n                        \"evm_from\": \"0x...\", // nullable sender who sent tx, in case evm tx\n                        \"evm_to\": \"0x...\", // nullable target addr of tx, in case evm tx, also null if is contract deployment\n                        \"evm_failed_reason\": \"...\", // nullable reason why evm tx was failed\n                        \"evm_method\": \"0x...\", // nullable invoked method id of contract\n                        \"evm_method_display\": \"airdrop\", // nullable translated invoked contract method (contract call)\n                        \"evm_call_type\": \"...\", // nullable evm call type (Normal Transfer, Contract Call, Deploy Contract)\n                        \"evm_value\": \"3000000000000000000\", // nullable evm total value {{coinbase-min-denom}} of evm tx (coinbase only)\n                        \"evm_value_display\": \"3.0\", // nullable evm total value {{coinbase}} of evm tx (coinbase only)\n                        \"total_value\": \"60000000000000000000000\", // total value {{coinbase-min-denom}} of message (coinbase only)\n                        \"total_value_display\": \"60000.0\", // total value {{coinbase}} of tx (coinbase only)\n                        \"internal_transfers\": [ // nullable internal transfer, filtered to show only \"from\" or \"to\" is request wallet\n                            {\n                                \"identifier\": \"CALL[2]_CALL\", // call-stack identifier\n                                \"type\": \"CALL\", // call type\n                                \"from\": \"0x...\", // deduct coinbase from this wallet\n                                \"to\": \"0x...\", // increase coinbase from this wallet\n                                \"amount\": \"1000000000000000000\", // amount of {{coinbase-min-denom}} transfered (coinbase only)\n                                \"amount_display\": \"1.0\", // amount of {{coinbase}} transfered (coinbase only)\n                            }\n                        ]\n                    }\n                ]\n            }\n        ]\n    }\n}\n\n```"
+			},
+			"response": []
+		},
+		{
+			"name": "[account] [txs-cosmos] v0.6 + docs",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{escan-api-ep}}?apikey={{escan-api-key}}&module=account&action=txs-cosmos&address=0x22e45d010cc4d69c5851af7b010f43f441327019&page=1&limit=25",
+					"host": [
+						"{{escan-api-ep}}"
+					],
+					"query": [
+						{
+							"key": "apikey",
+							"value": "{{escan-api-key}}"
+						},
+						{
+							"key": "module",
+							"value": "account"
+						},
+						{
+							"key": "action",
+							"value": "txs-cosmos"
+						},
+						{
+							"key": "address",
+							"value": "0x22e45d010cc4d69c5851af7b010f43f441327019",
+							"description": "(required) wallet to query, support both cosmos and evm style"
+						},
+						{
+							"key": "page",
+							"value": "1",
+							"description": "(optional)"
+						},
+						{
+							"key": "limit",
+							"value": "25",
+							"description": "(optional) max 50, min 5"
+						}
+					]
+				},
+				"description": "Get Cosmos transaction list of a specific wallet address.\n\nSample response:\n\n``` json\n{\n    \"status\": \"1\", // request success\n    \"message\": \"OK\", // request success\n    \"result\": {\n        \"pageNumber\": 1, // current page number (from query parameter)\n        \"limit\": 25, // maximum number of transactions per page (from query parameter)\n        \"txs\": [\n            {\n                \"hash\": \"520EEF812FEA59820D04A1...\", // cosmos tx hash\n                \"height\": 12345678, // block height\n                \"epoch\": 1676767676, // block epoch\n                \"success\": true, // success state\n                \"feePayer\": \"0xc3bcffe76cffc...\", // evm address of fee payer\n                \"typeSummary\": \"RT\", // type code of tx\n                \"typeSummaryDisplay\": \"EVM Transfer\", // translated type code of tx\n                \"totalValue\": \"300000000000000000\", // total value of this cosmos tx in minimum denom ({{coinbase-min-denom}})\n                \"totalValueDisplay\": \"0.3\", // total value of this cosmos tx ({{coinbase}}, for display purpose)\n                \"fee\": \"535500000000000\", // tx fee in minimum denom ({{coinbase-min-denom}})\n                \"feeDisplay\": \"0.0005355\" // tx fee ({{coinbase}}, for display purpose)\n            },\n            {\n                \"hash\": \"E12B794EE2D1EAC9E9F15C7...\",\n                \"height\": 12345677,\n                \"epoch\": 1676767666,\n                \"success\": true,\n                \"feePayer\": \"0x22e45d010cc4d6...\",\n                \"typeSummary\": \"ibc.core.channel.v1.MsgRecvPacket\",\n                \"totalValue\": \"202632682758797164544\",\n                \"totalValueDisplay\": \"202.632682758797164544\",\n                \"typeSummaryDisplay\": \"IBC Receive\",\n                \"fee\": \"11170620000000000\",\n                \"feeDisplay\": \"0.01117062\"\n            }\n        ]\n    }\n}\n\n```"
+			},
+			"response": []
+		},
+		{
+			"name": "[account] [txs-evm] v0.6 + docs",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{escan-api-ep}}?apikey={{escan-api-key}}&module=account&action=txs-evm&address=0x22e45d010cc4d69c5851af7b010f43f441327019&page=1&limit=25",
+					"host": [
+						"{{escan-api-ep}}"
+					],
+					"query": [
+						{
+							"key": "apikey",
+							"value": "{{escan-api-key}}"
+						},
+						{
+							"key": "module",
+							"value": "account"
+						},
+						{
+							"key": "action",
+							"value": "txs-evm"
+						},
+						{
+							"key": "address",
+							"value": "0x22e45d010cc4d69c5851af7b010f43f441327019",
+							"description": "(required) wallet to query, support both cosmos and evm style"
+						},
+						{
+							"key": "page",
+							"value": "1",
+							"description": "(optional)"
+						},
+						{
+							"key": "limit",
+							"value": "25",
+							"description": "(optional) max 50, min 5"
+						}
+					]
+				},
+				"description": "Get EVM transaction list of a specific wallet address.\n\nSample response:\n\n``` json\n{\n    \"status\": \"1\", // request success\n    \"message\": \"OK\", // request success\n    \"result\": {\n        \"pageNumber\": 1, // current page number (from query parameter)\n        \"limit\": 25, // maximum number of transactions per page (from query parameter)\n        \"txs\": [\n            {\n                \"hash\": \"0xf3f63077654698b6...\", // evm tx hash\n                \"height\": 12037309, // block height\n                \"epoch\": 1679429633, // block epoch\n                \"success\": true, // success state\n                \"from\": \"0x8dca0362f519f21518e49bbf...\", // evm address of tx sender\n                \"to\": \"0x22e45d010cc4d69c5851af7b0...\", // evm address of wallet/contract receiver\n                \"callType\": \"RT\", // type code of tx\n                \"callTypeDisplay\": \"Regular Transfer\", // translated type code of tx\n                \"totalValue\": \"5000000000000000000\", // total value of tx in min denom ({{coinbase-min-denom}})\n                \"totalValueDisplay\": \"5.0\" // total value of tx ({{coinbase}}, for display purpose)\n            }\n        ]\n    }\n}\n\n```"
+			},
+			"response": []
+		},
+		{
 			"name": "[stats] [top-holders-by-denom] v0.4 + docs",
 			"request": {
 				"method": "GET",
