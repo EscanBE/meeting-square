@@ -296,12 +296,12 @@
 			"response": []
 		},
 		{
-			"name": "[account] [balancecache] v0.4 + docs",
+			"name": "[account] [balancecache] v0.7 + docs",
 			"request": {
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{escan-api-ep}}?apikey={{escan-api-key}}&module=account&action=balancecache&address=evmos1rzsuv9fh660ls85n8yp0rszzn5my5d46jatke6",
+					"raw": "{{escan-api-ep}}?apikey={{escan-api-key}}&module=account&action=balancecache&address=evmos10ytkzv0wp0ajz9ufv7wvn37f7n7xalhsgjcc22",
 					"host": [
 						"{{escan-api-ep}}"
 					],
@@ -320,12 +320,12 @@
 						},
 						{
 							"key": "address",
-							"value": "evmos1rzsuv9fh660ls85n8yp0rszzn5my5d46jatke6",
+							"value": "evmos10ytkzv0wp0ajz9ufv7wvn37f7n7xalhsgjcc22",
 							"description": "(required) wallet to query, support both cosmos and evm style"
 						}
 					]
 				},
-				"description": "Get current balance of a specific wallet, from cache.\n\n**WARNING: balance data from cache, should not be trusted for critical logics.**\n\nSample response:\n\n``` json\n{\n    \"status\": \"1\",\n    \"message\": \"OK\",\n    \"result\": [\n    {\n        \"denom\": \"{{coinbase-min-denom}}\",\n        \"name\": \"{{coinbase}}\", // for display purpose\n        \"coin\": \"100549684627422442347\", // coin balance\n        \"erc20\": \"0\"\n    },\n    {\n        \"denom\": \"ibc/XXXX\",\n        \"name\": \"ATOM\", // for display purpose\n        \"coin\": \"1000000\", // coin balance\n        \"erc20\": \"2000000\" // erc20 token balance\n    },\n}\n\n```"
+				"description": "Get current balance of a specific wallet, from cache.\n\n**WARNING: balance data from cache, should not be trusted for critical logics.**\n\nSample response:\n\n``` json\n{\n    \"status\": \"1\",\n    \"message\": \"OK\",\n    \"result\": [\n    {\n        \"denom\": \"{{coinbase-min-denom}}\",\n        \"name\": \"{{coinbase}}\", // for display purpose\n        \"coin\": \"100549684627422442347\", // coin balance\n        \"exponent\": 18, // coinbase exponent, since v0.7\n        \"erc20\": \"0\"\n    },\n    {\n        \"denom\": \"ibc/XXXX\",\n        \"name\": \"ATOM\", // for display purpose\n        \"coin\": \"1000000\", // coin balance\n        \"exponent\": 6, // ATOM exponent, since v0.7\n        \"erc20\": \"2000000\" // erc20 token balance\n    },\n    { // since v0.7, erc20 token balance is shipped along with coin balance\n        \"denom\": \"contract/0x74cf35d8cbec0eb82998a5ebe6b63411687fe5c9\", // denom with 'contract/' prefix is token balance (ERC20 contracts token balance) and suffix is contract address\n        \"coin\": \"0\", // always zero for token balance\n        \"erc20\": \"11957011054334707189\", // token balance\n        \"exponent\": 18, // contract decimals\n        \"name\": \"xEVMOS\" // contract name\n    }\n}\n\n```"
 			},
 			"response": []
 		},
@@ -955,6 +955,52 @@
 					]
 				},
 				"description": "Convert Evm Tx Hash <=> Cosmos Tx Hash\n\nRequire API Pro\n\nTips: based on input hash, mode will be detected automatically because:\n\nEvm Tx Hash: 0x + 64 chars\n\nCosmos Hash: only 64 chars, without 0x as prefix\n\nSample response:\n\n``` json\n{\n    \"status\": \"1\",\n    \"message\": \"OK\",\n    \"result\": \"D7FF4536B522A468FD326D64B8C33BDE14B4674DA7295BCA36A7D365786C2F18\"\n}\n\n```"
+			},
+			"response": []
+		},
+		{
+			"name": "PRO [token] [tokenholderlist] v0.7 + docs",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{escan-api-ep}}?apikey={{escan-api-key}}&module=token&action=tokenholderlist&contractaddress=0xd4949664cd82660aae99bedc034a0dea8a0bd517",
+					"host": [
+						"{{escan-api-ep}}"
+					],
+					"query": [
+						{
+							"key": "apikey",
+							"value": "{{escan-api-key}}"
+						},
+						{
+							"key": "module",
+							"value": "token"
+						},
+						{
+							"key": "action",
+							"value": "tokenholderlist"
+						},
+						{
+							"key": "contractaddress",
+							"value": "0xd4949664cd82660aae99bedc034a0dea8a0bd517",
+							"description": "(required) contract address of smart contract you want to check"
+						},
+						{
+							"key": "page",
+							"value": "1",
+							"description": "(optional) the integer page number, if pagination is enabled, default page 1",
+							"disabled": true
+						},
+						{
+							"key": "offset",
+							"value": "10",
+							"description": "(oprional) the number of transactions displayed per page, default 10 per page",
+							"disabled": true
+						}
+					]
+				},
+				"description": "Return the current ERC20 token holders and number of tokens held.\n\n**WARNING: balance data from cache, should not be trusted for critical logics.**\n\nRequire API Pro\n\nSample response:\n\n``` json\n{\n    \"status\": \"1\",\n    \"message\": \"OK\",\n    \"result\": [\n        {\n            \"rank\": 1,\n            \"tokenHolderAddress\": \"0xc73ab455311cd7cc616736759a6edb36bfc6e88d\",\n            \"tokenHolderQuantity\": \"623387742567472292076829\"\n        },\n        {\n            \"rank\": 2,\n            \"tokenHolderAddress\": \"0xdbb514d2ec89524368b0a24d18b0d6649c4efe90\",\n            \"tokenHolderQuantity\": \"476338158935931620150242\"\n        },\n        ...\n    ],\n    \"note\": \"content from cache\"\n}\n\n```"
 			},
 			"response": []
 		}
