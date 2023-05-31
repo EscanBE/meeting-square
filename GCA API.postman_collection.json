@@ -1,0 +1,726 @@
+{
+	"info": {
+		"_postman_id": "49e612da-f1cb-45d0-b992-03b54b12073e",
+		"name": "(Partner) Global Configuration App",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "25829768"
+	},
+	"item": [
+		{
+			"name": "[Auth] Login v0.1 + docs",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Successful POST request\", function () {",
+							"    pm.expect(pm.response.code).to.be.oneOf([200]);",
+							"    var jsonData = pm.response.json();",
+							"    pm.environment.set(\"jwt\", jsonData.token);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"user\": \"evmos\",\n    \"chain\": \"{{chain}}\",\n    \"otp1\": \"085393\",\n    \"otp2\": \"123394\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/api/partner/_usr/_auth",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"partner",
+						"_usr",
+						"_auth"
+					]
+				},
+				"description": "This method is used to authenticate into API system.\n\nYou need to provide 2x two factor continuous codes (2 continuous circle, within 90s) to be able to login into system.\n\nFor example:  \n\\- At 01:05:30, code is **123456**  \n\\- At 01:06:00, code is **789432**  \nSo you need to fill **123456** and **789432** into the \"otp1\" and \"otp2\" fields and submit.\n\nSystem will response a authentication token, this script will automatically save it for future use (check the Tests tab for code)"
+			},
+			"response": []
+		},
+		{
+			"name": "[Auth] Lock my self v0.1 + docs",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"otp\": \"085393\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/api/partner/_usr/_lock",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"partner",
+						"_usr",
+						"_lock"
+					]
+				},
+				"description": "If you feel your account is no longer be safe or had been exposed, call this API to lock your account immediately then contact Escan team to issue new authentication password + two factor key.\n\nIf you mistakenly locked your account, contact Escan to unlock.\n\nRequirement:  \n\\- API authenticated  \n\\- 2FA code"
+			},
+			"response": []
+		},
+		{
+			"name": "[Auth] Change password v0.1 + docs",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"old_password\": \"My0ldPa$$word55\",\n    \"new_password\": \"MyN3wPa$$word55\",\n    \"otp\": \"085393\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/api/partner/_usr/_password",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"partner",
+						"_usr",
+						"_password"
+					]
+				},
+				"description": "Change password!\n\nPassword policy:  \n\\- Minimum length = 8  \n\\- Require upper case character  \n\\- Require lower case character  \n\\- Require non-alphanumeric  \n\\- Require digits"
+			},
+			"response": []
+		},
+		{
+			"name": "[Cfg/NameTag] Add or Update Public NameTags for an Address v0.1 + docs",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"address\": \"0xae9da235a2276caa3f6484ad8f0efbf4e0d45246\",\n    \"name_tag\": \"ENS\",\n    \"reference_url\": \"https://evmos.domains\",\n    \"otp\": \"318390\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/api/partner/_cfg/_addresses/_nametags",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"partner",
+						"_cfg",
+						"_addresses",
+						"_nametags"
+					]
+				},
+				"description": "Add or Update Public NameTags for an address (can be either Cosmos/Evm styles)"
+			},
+			"response": []
+		},
+		{
+			"name": "[Cfg/Label] Labelling an Account v0.1 + docs",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"account_address\": \"evmos1mx9nqk5agvlsvt2yc8259nwztmxq7zjq50mxkp\",\n    \"label_name\": \"Orbital Apes\",\n    \"otp\": \"408036\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/api/partner/_cfg/_accounts/_labels",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"partner",
+						"_cfg",
+						"_accounts",
+						"_labels"
+					]
+				},
+				"description": "Tag account with a label.\n\nLabel name with **format can be something like**:  \n\\- 0x Protocol  \n\\- Evmos.Org\n\nAccount address can be either Cosmos/Evm style address"
+			},
+			"response": []
+		},
+		{
+			"name": "[Cfg/Label] Labelling a Token v0.1 + docs",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"token_evm_address\": \"0xd4949664cd82660aae99bedc034a0dea8a0bd517\",\n    \"label_name\": \"Evmos.Org\",\n    \"otp\": \"408036\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/api/partner/_cfg/_tokens/_labels",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"partner",
+						"_cfg",
+						"_tokens",
+						"_labels"
+					]
+				},
+				"description": "Tag token contract with a label.\n\nLabel name with **format can be something like**:  \n\\- 0x Protocol  \n\\- Evmos.Org"
+			},
+			"response": []
+		},
+		{
+			"name": "[Cfg/Label] Labelling a Block v0.1 + docs",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"height\": 58701,\n    \"label_name\": \"Genesis\",\n    \"otp\": \"509034\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/api/partner/_cfg/_blocks/_labels",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"partner",
+						"_cfg",
+						"_blocks",
+						"_labels"
+					]
+				},
+				"description": "Tag a block with a label.\n\nLabel name with **format can be something like**:  \n\\- 0x Protocol  \n\\- Evmos.Org"
+			},
+			"response": []
+		},
+		{
+			"name": "[Cfg/Label] Labelling a Transaction v0.1 + docs",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"tx_hash\": \"0xa72dfb78b03bf9d53ba8800a97cb77fe37aeb1c7c0e99d0e8814400cce890d47\",\n    \"label_name\": \"ENS\",\n    \"otp\": \"408036\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/api/partner/_cfg/_txs/_labels",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"partner",
+						"_cfg",
+						"_txs",
+						"_labels"
+					]
+				},
+				"description": "Tag a transaction with a label.\n\nLabel name with **format can be something like**:  \n\\- 0x Protocol  \n\\- Evmos.Org"
+			},
+			"response": []
+		},
+		{
+			"name": "[Cfg/Label] Get existing Labels v0.1 + docs",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{host}}/api/partner/_cfg/_labels",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"partner",
+						"_cfg",
+						"_labels"
+					],
+					"query": [
+						{
+							"key": "filter",
+							"value": "",
+							"description": "filter by name (contains, case insensitive)",
+							"disabled": true
+						}
+					]
+				},
+				"description": "Returns list of existing Labels"
+			},
+			"response": []
+		},
+		{
+			"name": "[Cfg/Label] Update Label details v0.1 + docs",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"label\": \"Evmos.Org\",\n    \"description\": \"Belong to Evmos\",\n    \"website\": \"https://evmos.org\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/api/partner/_cfg/_labels",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"partner",
+						"_cfg",
+						"_labels"
+					]
+				},
+				"description": "Update details of label.\n\nIf you want to keep current info of any field, leave the field empty."
+			},
+			"response": []
+		},
+		{
+			"name": "[Cfg/Note] Add or Update Public Note for an Address v0.1 + docs",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"evm_address\": \"0xd4949664cd82660aae99bedc034a0dea8a0bd517\",\n    \"note\": \"Official Wrapped Evmos token contract\",\n    \"reference_url\": \"https://twitter.com/diffusion_fi/status/1519465659763208194\",\n    \"reporter_url\": \"https://evmos.org\",\n    \"red_flag\": false,\n    \"otp\": \"886218\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/api/partner/_cfg/_addresses/_notes",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"partner",
+						"_cfg",
+						"_addresses",
+						"_notes"
+					]
+				},
+				"description": "Add or Update public note for an evm address"
+			},
+			"response": []
+		},
+		{
+			"name": "[Cfg/Note] Add or Update Public Note for a Block v0.1 + docs",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"block_height\": 58701,\n    \"note\": \"Genesis Block\",\n    \"reference_url\": \"\",\n    \"reporter_url\": \"\",\n    \"red_flag\": false,\n    \"otp\": \"886218\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/api/partner/_cfg/_blocks/_notes",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"partner",
+						"_cfg",
+						"_blocks",
+						"_notes"
+					]
+				},
+				"description": "Add or Update public note for a block"
+			},
+			"response": []
+		},
+		{
+			"name": "[Cfg/Note] Add or Update Public Note for a Transaction v0.1 + docs",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"tx_hash\": \"AC038ED4DE974783B3D9681DC89EA2B727325756C185FA15CBC2F698395B261F\",\n    \"note\": \"First transaction ever on evmos_9001-2\",\n    \"reference_url\": \"https://escan.live/tx/AC038ED4DE974783B3D9681DC89EA2B727325756C185FA15CBC2F698395B261F\",\n    \"reporter_url\": \"https://evmos.org\",\n    \"red_flag\": false,\n    \"otp\": \"886218\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/api/partner/_cfg/_txs/_notes",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"partner",
+						"_cfg",
+						"_txs",
+						"_notes"
+					]
+				},
+				"description": "Add or Update public note for a transaction.\n\nTx hash:  \n\\- Cosmos TX must be 64 characters (32 bytes)  \n\\- Evm Tx must be 66 characters (prefix 0x then 32 bytes)"
+			},
+			"response": []
+		},
+		{
+			"name": "[Cfg/HashTags] Hashtag on Address v0.1 + docs",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"address\": \"0x9fA7bB759641FCd37fe4aE41f725e0f653f2C726\",\n    \"hashtag\": \"Phish / Hack\",\n    \"otp\": \"886218\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/api/partner/_cfg/_addresses/_hashtags",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"partner",
+						"_cfg",
+						"_addresses",
+						"_hashtags"
+					]
+				},
+				"description": "Put a hashtag on address (mainly for tagging phishing/hacking/scam wallets)\n\nAccepted hashtags are:  \n\\- Phish / Hack  \n\\- Scam\n\nHashTags are pre-defined by Escan, if you want to add another HashTags, please contact Escan team"
+			},
+			"response": []
+		}
+	]
+}
